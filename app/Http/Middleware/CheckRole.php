@@ -1,4 +1,5 @@
 <?php
+// app/Http/Middleware/CheckRole.php
 
 namespace App\Http\Middleware;
 
@@ -9,15 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  string  ...$roles
-     */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        // Check if user is authenticated
         if (!Auth::guard('api')->check()) {
             return response()->json([
                 'success' => false,
@@ -25,11 +19,9 @@ class CheckRole
             ], 401);
         }
 
-        // Get current user role
         $user = Auth::guard('api')->user();
-        $userRole = $user->role;
+        $userRole = $user->role->role_def;
 
-        // Check if user has required role
         if (!in_array($userRole, $roles)) {
             return response()->json([
                 'success' => false,

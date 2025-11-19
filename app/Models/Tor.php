@@ -1,4 +1,5 @@
 <?php
+// app/Models/Tor.php
 
 namespace App\Models;
 
@@ -10,118 +11,173 @@ class Tor extends Model
     use SoftDeletes;
 
     protected $table = 'tor';
-    protected $primaryKey = 'idTor';
+    protected $primaryKey = 'tor_id';
 
-    const UPDATED_AT = 'updatedAt';
-    const DELETED_AT = 'deletedAt';
+    const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
     public $timestamps = false;
 
     protected $fillable = [
-        'idPengguna',
-        'idKategori',
-        'judulKegiatan',
-        'tujuanKegiatan',
-        'jadwalMulai',
-        'jadwalSelesai',
-        'jumlahAnggaranDiajukan',
+        'activity_name',
+        'activity_background',
+        'activity_purpose',
+        'participant',
+        'start_date',
+        'end_date',
+        'budget_submitted',
+        'pic',
         'status',
-        'tanggalPengajuan',
+        'current_stage',
+        'category_id',
+        'user_id',
+        'budget_id',
     ];
 
     protected $casts = [
-        'jadwalMulai' => 'date',
-        'jadwalSelesai' => 'date',
-        'tanggalPengajuan' => 'date',
-        'jumlahAnggaranDiajukan' => 'double',
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'sub_date' => 'datetime',
+        'budget_submitted' => 'decimal:2',
     ];
 
     // Relationships
-    public function pengguna()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'idPengguna', 'idUser');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    public function riwayatStatus()
+    public function category()
     {
-        return $this->hasMany(RiwayatStatus::class, 'idTor');
+        return $this->belongsTo(ActivityCategory::class, 'category_id', 'category_id');
     }
 
-    public function lampiran()
+    public function annualBudget()
     {
-        return $this->hasMany(Lampiran::class, 'idTor');
+        return $this->belongsTo(AnnualBudget::class, 'budget_id', 'budget_id');
     }
 
     public function lpj()
     {
-        return $this->hasOne(Lpj::class, 'idTor');
+        return $this->hasOne(Lpj::class, 'tor_id', 'tor_id');
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class, 'tor_id', 'tor_id');
+    }
+
+    public function statusHistories()
+    {
+        return $this->hasMany(StatusHist::class, 'tor_id', 'tor_id');
+    }
+
+    public function approvals()
+    {
+        return $this->hasMany(TorApprov::class, 'tor_id', 'tor_id');
     }
 
     /**
      * Submit TOR
-     *
-     * @param int $idUserAksi
      */
-    public function ajukan($idUserAksi)
+    public function submit($userId)
     {
-        $this->status = 'diajukan';
-        $this->tanggalPengajuan = now();
+        $this->status = 'submitted';
+        $this->current_stage = 'submitted';
         $this->save();
 
-        $this->updateStatus('diajukan', 'TOR diajukan untuk persetujuan', $idUserAksi);
+        $this->addStatusHistory('submitted', 'TOR submitted for approval', $userId);
     }
 
     /**
-     * Update TOR status
-     *
-     * @param string $statusBaru
-     * @param string|null $catatan
-     * @param int $idUserAksi
+     * Add status history
      */
-    public function updateStatus($statusBaru, $catatan = null, $idUserAksi)
+    public function addStatusHistory($status, $catatan = null, $userId = null)
     {
-        $this->status = $statusBaru;
-        $this->save();
-
-        RiwayatStatus::create([
-            'idTor' => $this->idTor,
-            'idUserAksi' => $idUserAksi,
-            'statusBaru' => $statusBaru,
+        StatusHist::create([
+            'tor_id' => $this->tor_id,
+            'user_id' => $userId,
+            'status' => $status,
             'catatan' => $catatan,
         ]);
     }
 
     /**
-     * Add attachment
-     *
-     * @param array $fileData
+     * Add approval record
      */
-    public function tambahLampiran($fileData)
+    public function addApproval($userId, $roleId, $action, $catatan = null)
     {
-        return Lampiran::create([
-            'idTor' => $this->idTor,
-            'namaFile' => $fileData['namaFile'],
-            'pathFile' => $fileData['pathFile'],
-            'tipeFile' => $fileData['tipeFile'],
-            'ukuranFile' => $fileData['ukuranFile'],
+        TorApprov::create([
+            'tor_id' => $this->tor_id,
+            'user_id' => $userId,
+            'role_id' => $roleId,
+            'status' => $this->status,
+            'action' => $action,
+            'catatan' => $catatan,
         ]);
     }
 
     /**
-     * Get all attachments
+     * Approve by secretary
      */
-    public function getLampiran()
+    public function approveBySecretary($userId, $roleId, $catatan = null)
     {
-        return $this->lampiran;
+        $this->status = 'reviewed_by_secretary';
+        $this->current_stage = 'reviewed_by_secretary';
+        $this->save();
+
+        $this->addStatusHistory('reviewed_by_secretary', $catatan, $userId);
+        $this->addApproval($userId, $roleId, 'approved', $catatan);
     }
 
     /**
-     * Get status history
+     * Verify by admin
      */
-    public function getRiwayatStatus()
+    public function verifyByAdmin($userId, $roleId, $catatan = null)
     {
-        return $this->riwayatStatus()
-            ->with('userAksi')
-            ->orderBy('timestampAksi', 'desc')
-            ->get();
+        $this->status = 'verified_by_admin';
+        $this->current_stage = 'verified_by_admin';
+        $this->save();
+
+        $this->addStatusHistory('verified_by_admin', $catatan, $userId);
+        $this->addApproval($userId, $roleId, 'approved', $catatan);
+    }
+
+    /**
+     * Approve by head
+     */
+    public function approveByHead($userId, $roleId, $catatan = null)
+    {
+        $this->status = 'approved_by_head';
+        $this->current_stage = 'approved_by_head';
+        $this->save();
+
+        $this->addStatusHistory('approved_by_head', $catatan, $userId);
+        $this->addApproval($userId, $roleId, 'approved', $catatan);
+    }
+
+    /**
+     * Reject TOR
+     */
+    public function reject($userId, $roleId, $catatan)
+    {
+        $this->status = 'rejected';
+        $this->current_stage = 'rejected';
+        $this->save();
+
+        $this->addStatusHistory('rejected', $catatan, $userId);
+        $this->addApproval($userId, $roleId, 'rejected', $catatan);
+    }
+
+    /**
+     * Request revision
+     */
+    public function requestRevision($userId, $roleId, $catatan)
+    {
+        $this->status = 'needs_revision';
+        $this->current_stage = 'needs_revision';
+        $this->save();
+
+        $this->addStatusHistory('needs_revision', $catatan, $userId);
+        $this->addApproval($userId, $roleId, 'request_revision', $catatan);
     }
 }

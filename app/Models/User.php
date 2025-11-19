@@ -1,6 +1,6 @@
 <?php
-
 // app/Models/User.php
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,92 +12,75 @@ class User extends Authenticatable implements JWTSubject
     use SoftDeletes;
 
     protected $table = 'users';
-    protected $primaryKey = 'idUser';
+    protected $primaryKey = 'user_id';
 
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
-    const DELETED_AT = 'deletedAt';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
 
     protected $fillable = [
-        'ssoId',
-        'namaLengkap',
+        'full_name',
         'email',
-        'role',
+        'role_id',
     ];
 
-    protected $hidden = [
-        'password',
-    ];
-
-    /**
-     * Get JWT identifier
-     */
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
-    /**
-     * Get JWT custom claims
-     */
     public function getJWTCustomClaims()
     {
         return [];
     }
 
-    /**
-     * Check if user is admin
-     */
+    // Relationship
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
+
+    public function tors()
+    {
+        return $this->hasMany(Tor::class, 'user_id', 'user_id');
+    }
+
+    public function lpjs()
+    {
+        return $this->hasMany(Lpj::class, 'user_id', 'user_id');
+    }
+
+    // Helper methods
+    public function hasRole($roleNames)
+    {
+        if (is_array($roleNames)) {
+            return in_array($this->role->role_def, $roleNames);
+        }
+        return $this->role->role_def === $roleNames;
+    }
+
+    public function isMahasiswa()
+    {
+        return $this->role->role_def === 'mahasiswa';
+    }
+
+    public function isDosen()
+    {
+        return $this->role->role_def === 'dosen';
+    }
+
+    public function isSekretaris()
+    {
+        return $this->role->role_def === 'sekretaris jurusan';
+    }
+
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role->role_def === 'admin jurusan';
     }
 
-    /**
-     * Check if user is department head
-     */
-    public function isKepalaDepartemen()
+    public function isKetua()
     {
-        return $this->role === 'kepala_departemen';
-    }
-
-    /**
-     * Get user's TOR submissions
-     */
-    public function ajukanTor()
-    {
-        return $this->hasMany(Tor::class, 'idPengguna');
-    }
-
-    /**
-     * Get user's budget inputs
-     */
-    public function ajukanAnggaran()
-    {
-        return $this->hasMany(AnggaranTahunan::class, 'idUserInput');
-    }
-
-    /**
-     * Setup document for verification
-     */
-    public function setupDokumen()
-    {
-        // Logic untuk setup dokumen
-    }
-
-    /**
-     * Verify document
-     */
-    public function verifikasiDokumen()
-    {
-        // Logic untuk verifikasi dokumen
-    }
-
-    /**
-     * Reject document
-     */
-    public function tolakDokumen()
-    {
-        // Logic untuk tolak dokumen
+        return $this->role->role_def === 'ketua jurusan';
     }
 }
