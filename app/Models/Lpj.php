@@ -6,6 +6,45 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $lpj_id
+ * @property string $activity_result
+ * @property string $activity_evaluation
+ * @property numeric $budget_used
+ * @property string $status
+ * @property string $current_stage
+ * @property \Illuminate\Support\Carbon $sub_date
+ * @property string $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int|null $tor_id
+ * @property int|null $user_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LpjApprov> $approvals
+ * @property-read int|null $approvals_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Attachment> $attachments
+ * @property-read int|null $attachments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StatusHist> $statusHistories
+ * @property-read int|null $status_histories_count
+ * @property-read \App\Models\Tor|null $tor
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereActivityEvaluation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereActivityResult($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereBudgetUsed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereCurrentStage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereLpjId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereSubDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereTorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lpj withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Lpj extends Model
 {
     use SoftDeletes;

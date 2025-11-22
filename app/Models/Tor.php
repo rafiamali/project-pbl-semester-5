@@ -6,6 +6,59 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $tor_id
+ * @property string $activity_name
+ * @property string $activity_background
+ * @property string $activity_purpose
+ * @property string $participant
+ * @property \Illuminate\Support\Carbon $start_date
+ * @property \Illuminate\Support\Carbon $end_date
+ * @property numeric $budget_submitted
+ * @property string $pic
+ * @property string $status
+ * @property string $current_stage
+ * @property \Illuminate\Support\Carbon $sub_date
+ * @property string $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int|null $category_id
+ * @property int|null $user_id
+ * @property int|null $budget_id
+ * @property-read \App\Models\AnnualBudget|null $annualBudget
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TorApprov> $approvals
+ * @property-read int|null $approvals_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Attachment> $attachments
+ * @property-read int|null $attachments_count
+ * @property-read \App\Models\ActivityCategory|null $category
+ * @property-read \App\Models\Lpj|null $lpj
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StatusHist> $statusHistories
+ * @property-read int|null $status_histories_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereActivityBackground($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereActivityName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereActivityPurpose($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereBudgetId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereBudgetSubmitted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereCurrentStage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereParticipant($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor wherePic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereSubDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereTorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tor withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Tor extends Model
 {
     use SoftDeletes;

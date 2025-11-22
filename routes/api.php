@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\LpjController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AnnualBudgetController;
 use App\Http\Controllers\Api\ActivityCategoryController;
+use App\Http\Controllers\Api\RiwayatStatusController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -49,4 +50,11 @@ Route::middleware('auth:api')->group(function () {
     // Activity Category routes
     Route::get('activity-categories', [ActivityCategoryController::class, 'index']);
     Route::get('activity-categories/{id}', [ActivityCategoryController::class, 'show']);
+
+    // Status History routes
+    Route::get('status-history', [RiwayatStatusController::class, 'index']);
+    Route::get('status-history/{id}', [RiwayatStatusController::class, 'show']);
+    Route::get('status-history/tor/{torId}', [RiwayatStatusController::class, 'getTorHistory']);
+    Route::get('status-history/lpj/{lpjId}', [RiwayatStatusController::class, 'getLpjHistory']);
+    Route::get('status-history/statistics', [RiwayatStatusController::class, 'getStatistics']);
 });

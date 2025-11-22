@@ -6,6 +6,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $category_id
+ * @property string $category_def
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tor> $tors
+ * @property-read int|null $tors_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory whereCategoryDef($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ActivityCategory withoutTrashed()
+ * @mixin \Eloquent
+ */
 class ActivityCategory extends Model
 {
     use SoftDeletes;

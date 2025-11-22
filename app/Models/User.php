@@ -7,6 +7,40 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * @property int $user_id
+ * @property string $full_name
+ * @property string $email
+ * @property int|null $role_id
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lpj> $lpjs
+ * @property-read int|null $lpjs_count
+ * @property-read \App\Models\Role|null $role
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tor> $tors
+ * @property-read int|null $tors_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFullName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRoleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTrashed()
+ * @method bool hasRole(string|array $roleNames)
+ * @method bool isMahasiswa()
+ * @method bool isDosen()
+ * @method bool isSekretaris()
+ * @method bool isAdmin()
+ * @method bool isKetua()
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use SoftDeletes;
@@ -71,16 +105,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function isSekretaris()
     {
-        return $this->role->role_def === 'sekretaris jurusan';
+        return $this->role?->role_def === 'sekretaris jurusan';
     }
 
     public function isAdmin()
     {
-        return $this->role->role_def === 'admin jurusan';
+        return $this->role?->role_def === 'admin jurusan';
     }
 
     public function isKetua()
     {
-        return $this->role->role_def === 'ketua jurusan';
+        return $this->role?->role_def === 'ketua jurusan';
     }
 }
